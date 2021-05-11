@@ -26,12 +26,16 @@ export default function EventPage({ evt }) {
         </div>
 
         <span>
-          {evt.date} at {evt.time}
+          {new Date(evt.date).toLocaleDateString('en-US')} at {evt.time}
         </span>
         <h1>{evt.name}</h1>
         {evt.image && (
           <div className={styles.image}>
-            <Image src={evt.image} width={960} height={600} />
+            <Image
+              src={evt.image.formats.medium.url}
+              width={960}
+              height={600}
+            />
           </div>
         )}
 
@@ -57,7 +61,7 @@ export default function EventPage({ evt }) {
 // and the way to create such array is to get all the data and map through it and then return an object with params and the slug for each event .... having a fallback is required
 
 export async function getStaticPaths() {
-  const res = await fetch(`${API_URL}/api/events/`);
+  const res = await fetch(`${API_URL}/events/`);
   const events = await res.json();
   const paths = events.map((evt) => ({ params: { slug: evt.slug } }));
   return {
@@ -67,7 +71,7 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params: { slug } }) {
-  const res = await fetch(`${API_URL}/api/events/${slug}`);
+  const res = await fetch(`${API_URL}/events?slug=${slug}`);
   const eventArr = await res.json();
 
   return {
@@ -76,6 +80,18 @@ export async function getStaticProps({ params: { slug } }) {
     revalidate: 1,
   };
 }
+
+// Before strapi (just using next api routes)
+// export async function getStaticProps({ params: { slug } }) {
+//   const res = await fetch(`${API_URL}/api/events/${slug}`);
+//   const eventArr = await res.json();
+
+//   return {
+//     // since evt in this case would be an array with only one object we should return the first item of the array so later we can access evt.id and stuff
+//     props: { evt: eventArr[0] },
+//     revalidate: 1,
+//   };
+// }
 
 // using getServerSideProps generates the paths at each request and it has access to context which includes query and then query has access to slug so we can pass it in to our fetch url
 
