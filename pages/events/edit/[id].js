@@ -171,9 +171,13 @@ export default function AddEventPage({ evt }) {
   );
 }
 
-export async function getServerSideProps({ params: { id } }) {
+export async function getServerSideProps({ params: { id }, req }) {
   const res = await fetch(`${API_URL}/events/${id}`);
   const evt = await res.json();
+
+  // Token is only accessible on the server side on not the client
+
+  console.log(req.headers.cookie); //token = .......jwt
 
   return {
     props: {
