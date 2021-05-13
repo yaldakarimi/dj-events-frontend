@@ -15,13 +15,20 @@ export default function RegisterPage() {
 
   const { register, error } = useContext(AuthContext);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (passwordConfirm !== password) {
       toast.error('Passwords do not match');
       return;
     }
-    register({ username, email, password, passwordConfirm });
+
+    register({ username, email, password });
   };
   return (
     <Layout title='User Registration'>
@@ -71,7 +78,7 @@ export default function RegisterPage() {
             />
           </div>
 
-          <input type='submit' value='Login' className='btn' />
+          <input type='submit' value='Register' className='btn' />
           <p>
             Already have an account? <Link href='/account/login'>Login</Link>
           </p>
