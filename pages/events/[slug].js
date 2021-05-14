@@ -78,7 +78,7 @@ export default function EventPage({ evt }) {
 // and the way to create such array is to get all the data and map through it and then return an object with params and the slug for each event .... having a fallback is required
 
 export async function getStaticPaths() {
-  const res = await fetch(`${API_URL}/events/`);
+  const res = await fetch(`${API_URL}/events`);
   const events = await res.json();
   const paths = events.map((evt) => ({ params: { slug: evt.slug } }));
   return {
